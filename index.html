@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Agent 高手养成计划</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
             --primary: #6366f1;
@@ -24,6 +20,7 @@
             --border: #334155;
             --success: #10b981;
             --warning: #f59e0b;
+            --error: #ef4444;
         }
         
         body {
@@ -34,7 +31,6 @@
             min-height: 100vh;
         }
         
-        /* Header */
         header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             padding: 2rem 0;
@@ -43,32 +39,9 @@
             overflow: hidden;
         }
         
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.5;
-        }
+        header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+        header p { font-size: 1.1rem; opacity: 0.9; }
         
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            position: relative;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            position: relative;
-        }
-        
-        /* Navigation */
         nav {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
@@ -86,10 +59,6 @@
             margin: 0 auto;
         }
         
-        nav li {
-            margin: 0;
-        }
-        
         nav a {
             display: block;
             padding: 1rem 1.5rem;
@@ -105,44 +74,144 @@
             border-bottom-color: var(--accent);
         }
         
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
         
-        /* Cards */
         .card {
             background: var(--bg-card);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             border: 1px solid var(--border);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
         
         .card h2 {
             color: var(--accent);
             font-size: 1.3rem;
             margin-bottom: 1rem;
+        }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* Quiz Styles */
+        .quiz-container {
+            background: var(--bg-hover);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        
+        .quiz-options {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 0.5rem;
         }
         
-        .card h3 {
-            color: var(--primary);
-            font-size: 1.1rem;
-            margin: 1rem 0 0.5rem;
+        .quiz-option {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
         
-        /* Progress Section */
+        .quiz-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .quiz-option.wrong {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .quiz-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .quiz-result.show { display: block; }
+        .quiz-result.correct { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .quiz-result.wrong { background: rgba(239, 68, 68, 0.2); color: var(--error); }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover { background: var(--primary-dark); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Practical Task */
+        .practical-task {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .practical-task h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .practical-task textarea {
+            width: 100%;
+            min-height: 150px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text);
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .practical-task textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .score-display {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-hover);
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
         .progress-bar {
             background: var(--bg-hover);
             border-radius: 10px;
@@ -178,166 +247,6 @@
             color: var(--accent);
         }
         
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-        
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0.5rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--border);
-        }
-        
-        .timeline-item {
-            position: relative;
-            padding: 1rem 0;
-            border-left: none;
-        }
-        
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -1.75rem;
-            top: 1.5rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--border);
-            border: 2px solid var(--bg);
-        }
-        
-        .timeline-item.completed::before {
-            background: var(--success);
-        }
-        
-        .timeline-item.active::before {
-            background: var(--accent);
-            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.3);
-        }
-        
-        .timeline-day {
-            font-size: 0.85rem;
-            color: var(--accent);
-            font-weight: 600;
-        }
-        
-        .timeline-title {
-            font-weight: 600;
-            margin: 0.25rem 0;
-        }
-        
-        .timeline-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        
-        /* News Cards */
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-        
-        .news-item {
-            background: var(--bg-hover);
-            border-radius: 8px;
-            padding: 1rem;
-            border-left: 3px solid var(--primary);
-        }
-        
-        .news-item h4 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-        }
-        
-        .news-item p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-        
-        .news-item a {
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-        
-        .news-item a:hover {
-            text-decoration: underline;
-        }
-        
-        /* Content Styling */
-        .content-section {
-            background: var(--bg-card);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .content-section h2 {
-            color: var(--accent);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .content-section h3 {
-            color: var(--primary);
-            margin: 1.5rem 0 0.75rem;
-        }
-        
-        .content-section p {
-            margin-bottom: 1rem;
-            color: var(--text-muted);
-        }
-        
-        .content-section ul, .content-section ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--text-muted);
-        }
-        
-        .content-section li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .content-section code {
-            background: var(--bg-hover);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: 'Consolas', monospace;
-            font-size: 0.9em;
-            color: var(--accent);
-        }
-        
-        /* Tags */
-        .tag {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--bg-hover);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .tag-primary { background: rgba(99, 102, 241, 0.2); color: var(--primary); }
-        .tag-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
-        .tag-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        
-        /* Footer */
         footer {
             text-align: center;
             padding: 2rem;
@@ -346,29 +255,9 @@
             margin-top: 2rem;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-            
-            nav a {
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
-            }
-        }
-        
-        /* Hidden sections */
-        .section {
-            display: none;
-        }
-        
-        .section.active {
-            display: block;
+            header h1 { font-size: 1.8rem; }
+            .container { padding: 1rem; }
         }
     </style>
 </head>
@@ -382,9 +271,8 @@
         <ul>
             <li><a href="#overview" class="active" onclick="showSection('overview')">总览</a></li>
             <li><a href="#today" onclick="showSection('today')">今日学习</a></li>
-            <li><a href="#plan" onclick="showSection('plan')">学习计划</a></li>
+            <li><a href="#quiz" onclick="showSection('quiz')">每日小测</a></li>
             <li><a href="#news" onclick="showSection('news')">AI新闻</a></li>
-            <li><a href="#progress" onclick="showSection('progress')">学习进度</a></li>
         </ul>
     </nav>
     
@@ -395,67 +283,70 @@
                 <h2>📊 学习概览</h2>
                 <div class="stats">
                     <div class="stat-item">
-                        <div class="stat-number">1</div>
-                        <div class="stat-label">当前天数</div>
+                        <div class="stat-number" id="currentDay">1</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">当前天数</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-number">21</div>
-                        <div class="stat-label">计划天数</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">计划天数</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">5%</div>
-                        <div class="stat-label">完成进度</div>
+                        <div class="stat-number" id="progressPercent">5%</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">完成进度</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-number">20</div>
-                        <div class="stat-label">分钟/天</div>
+                        <div style="color: var(--text-muted); font-size: 0.9rem;">分钟/天</div>
                     </div>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 5%"></div>
+                    <div class="progress-fill" id="progressBar" style="width: 5%"></div>
                 </div>
             </div>
             
             <div class="card">
                 <h2>🎯 当前阶段</h2>
-                <span class="tag tag-primary">第一阶段</span>
-                <span class="tag">认知建立</span>
-                <p style="margin-top: 1rem;">了解AI Agent是什么、能做什么、有哪些形态</p>
+                <p><strong>第一阶段：认知建立（Day 1-7）</strong></p>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">了解AI Agent是什么、能做什么、有哪些形态</p>
             </div>
             
             <div class="card">
                 <h2>📚 今日主题</h2>
-                <h3>什么是AI Agent</h3>
-                <p>Agent vs 传统AI、核心概念（感知-思考-行动循环）</p>
-                <a href="#today" onclick="showSection('today')" style="color: var(--accent);">开始学习 →</a>
+                <p><strong>Day 1 | 什么是AI Agent</strong></p>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Agent vs 传统AI、核心概念（感知-思考-行动循环）</p>
+                <a href="#today" onclick="showSection('today')" style="color: var(--accent); display: inline-block; margin-top: 1rem;">开始学习 →</a>
             </div>
         </div>
         
         <!-- Today's Learning Section -->
         <div id="today" class="section">
-            <div class="content-section">
+            <div class="card">
                 <h2>📚 Day 1 | 什么是AI Agent</h2>
                 
-                <h3>核心概念解释</h3>
-                <p><strong>传统AI</strong>（如ChatGPT）：</p>
-                <ul>
+                <h3 style="color: var(--primary); margin: 1.5rem 0 1rem;">核心概念解释</h3>
+                
+                <p style="margin-bottom: 1rem;"><strong>传统AI</strong>（如ChatGPT）：</p>
+                <ul style="margin-left: 1.5rem; color: var(--text-muted);">
                     <li>你问一句，它答一句</li>
                     <li>没有记忆，每次对话都是新的开始</li>
                     <li>不能主动做事情，只能被动回答</li>
                 </ul>
                 
-                <p><strong>AI Agent</strong>：</p>
-                <ul>
+                <p style="margin: 1.5rem 0 1rem;"><strong>AI Agent</strong>：</p>
+                <ul style="margin-left: 1.5rem; color: var(--text-muted);">
                     <li><strong>感知</strong> → 接收信息（用户指令、环境变化、定时触发）</li>
                     <li><strong>思考</strong> → 理解任务、拆解步骤、选择工具</li>
-                    <li><strong>行动</strong> → 调用工具执行（搜索、写文件、发消息、控制浏览器等）</li>
+                    <li><strong>行动</strong> → 调用工具执行（搜索、写文件、发消息等）</li>
                     <li><strong>记忆</strong> → 记住之前的交互和结果</li>
                 </ul>
                 
-                <p>简单说：传统AI是"问答机"，Agent是"能干活的小助手"。</p>
+                <p style="background: var(--bg-hover); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
+                    💡 <strong>简单说：</strong>传统AI是"问答机"，Agent是"能干活的小助手"。
+                </p>
                 
-                <h3>实际案例对比</h3>
-                <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <h3 style="color: var(--primary); margin: 2rem 0 1rem;">实际案例对比</h3>
+                
+                <table style="width: 100%; border-collapse: collapse;">
                     <tr style="background: var(--bg-hover);">
                         <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--border);">场景</th>
                         <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--border);">传统AI</th>
@@ -463,132 +354,88 @@
                     </tr>
                     <tr>
                         <td style="padding: 0.75rem; border: 1px solid var(--border);">查天气</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">"今天北京天气如何？" → 回答文字</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">自动搜索天气 → 整理成报告 → 定时每天推送</td>
+                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">回答文字</td>
+                        <td style="padding: 0.75rem; border: 1px solid var(--border);">自动搜索→整理报告→定时推送</td>
                     </tr>
                     <tr style="background: var(--bg-hover);">
                         <td style="padding: 0.75rem; border: 1px solid var(--border);">写代码</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">"帮我写一个Python爬虫" → 给代码</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">分析需求 → 写代码 → 测试运行 → 报错修复 → 保存文件</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">投资分析</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">"分析这只股票" → 给分析</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">定时获取行情 → 搜索新闻 → 生成报告 → 主动提醒</td>
+                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">给代码</td>
+                        <td style="padding: 0.75rem; border: 1px solid var(--border);">分析→编写→测试→修复→保存</td>
                     </tr>
                 </table>
                 
-                <h3>实践建议</h3>
-                <p>今天你可以：</p>
-                <ul>
-                    <li>观察我是如何工作的：你给一个指令，我会判断用什么工具、分几步完成</li>
-                    <li>尝试给我一个多步骤任务，比如："搜索今天AI新闻，整理成markdown保存"</li>
-                </ul>
-                
-                <h3>思考题</h3>
-                <p>如果让你设计一个"个人日程Agent"，它需要具备哪些能力？（感知什么、思考什么、执行什么）</p>
-                
-                <div style="background: var(--bg-hover); padding: 1rem; border-radius: 8px; margin-top: 1.5rem;">
-                    <strong>💡 学习建议：</strong>先建立直觉——AI Agent不只是"能聊天的AI"，而是能<strong>感知环境→思考决策→执行行动</strong>的闭环系统。对比传统AI的"一问一答"，Agent可以主动调用工具、持续记忆、完成复杂任务链。
-                </div>
+                <h3 style="color: var(--primary); margin: 2rem 0 1rem;">实践建议</h3>
+                <p style="color: var(--text-muted);">今天你可以观察我是如何工作的：给一个指令，我会判断用什么工具、分几步完成。</p>
             </div>
         </div>
         
-        <!-- Learning Plan Section -->
-        <div id="plan" class="section">
+        <!-- Quiz Section -->
+        <div id="quiz" class="section">
             <div class="card">
-                <h2>📅 完整学习计划</h2>
+                <h2>📝 每日小测 | Day 1</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">完成以下3道题目，检验你的学习成果</p>
                 
-                <h3>第一阶段：认知建立（第1-7天）</h3>
-                <div class="timeline">
-                    <div class="timeline-item active">
-                        <div class="timeline-day">Day 1</div>
-                        <div class="timeline-title">什么是AI Agent</div>
-                        <div class="timeline-desc">Agent vs 传统AI、核心概念（感知-思考-行动循环）</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 2</div>
-                        <div class="timeline-title">Agent的典型架构</div>
-                        <div class="timeline-desc">ReAct、CoT、ToT等推理模式简介</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 3</div>
-                        <div class="timeline-title">主流Agent框架概览</div>
-                        <div class="timeline-desc">LangChain、AutoGPT、MetaGPT、OpenClaw/Kimi Claw等</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 4</div>
-                        <div class="timeline-title">工具调用（Tool Use）</div>
-                        <div class="timeline-desc">如何让Agent使用外部工具</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 5</div>
-                        <div class="timeline-title">记忆机制</div>
-                        <div class="timeline-desc">短期记忆、长期记忆、向量数据库基础</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 6</div>
-                        <div class="timeline-title">多Agent协作与集群</div>
-                        <div class="timeline-desc">多Agent系统的分工、通信、Agent集群架构</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 7</div>
-                        <div class="timeline-title">第一阶段小结</div>
-                        <div class="timeline-desc">整理笔记，动手跑一个最简单的Agent Demo</div>
-                    </div>
+                <!-- Score Display -->
+                <div class="score-display" id="scoreDisplay" style="display: none;">
+                    <div class="score-number" id="scoreNumber">0/2</div>
+                    <p>选择题得分</p>
                 </div>
                 
-                <h3>第二阶段：动手实践（第8-21天）</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 8-10</div>
-                        <div class="timeline-title">Kimi Claw实战入门</div>
-                        <div class="timeline-desc">OpenClaw安装配置、基础命令、工具调用</div>
+                <!-- Question 1 -->
+                <div class="quiz-container">
+                    <div class="quiz-question">1. 以下哪项是AI Agent与传统AI最核心的区别？</div>
+                    <div class="quiz-options" id="q1-options">
+                        <div class="quiz-option" onclick="selectOption(1, 'A')" data-value="A">
+                            A. Agent的回答更流畅自然
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(1, 'B')" data-value="B">
+                            B. Agent能主动调用工具、持续记忆、完成复杂任务链
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(1, 'C')" data-value="C">
+                            C. Agent的模型参数更大
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(1, 'D')" data-value="D">
+                            D. Agent只能回答特定领域的问题
+                        </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 11-13</div>
-                        <div class="timeline-title">搭建Kimi Claw工作流</div>
-                        <div class="timeline-desc">自动化任务、定时任务(cron)、文件管理</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 14-16</div>
-                        <div class="timeline-title">Agent集群初探</div>
-                        <div class="timeline-desc">多Agent协作模式、任务分发、结果聚合</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 17-19</div>
-                        <div class="timeline-title">Kimi Claw进阶</div>
-                        <div class="timeline-desc">自定义Skill开发、Memory管理、子Agent调用</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">Day 20-21</div>
-                        <div class="timeline-title">第二阶段小结</div>
-                        <div class="timeline-desc">用Kimi Claw完成一个多Agent协作小项目</div>
-                    </div>
+                    <div class="quiz-result" id="q1-result"></div>
                 </div>
                 
-                <h3>第三阶段：进阶深入（第22天起）</h3>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-day">方向A</div>
-                        <div class="timeline-title">Kimi Claw深度定制</div>
-                        <div class="timeline-desc">Skill开发、网关配置、私有化部署</div>
+                <!-- Question 2 -->
+                <div class="quiz-container">
+                    <div class="quiz-question">2. 在"感知-思考-行动"循环中，"思考"阶段主要做什么？</div>
+                    <div class="quiz-options" id="q2-options">
+                        <div class="quiz-option" onclick="selectOption(2, 'A')" data-value="A">
+                            A. 接收用户输入和环境信息
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(2, 'B')" data-value="B">
+                            B. 理解任务、拆解步骤、选择工具
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(2, 'C')" data-value="C">
+                            C. 执行具体操作并输出结果
+                        </div>
+                        <div class="quiz-option" onclick="selectOption(2, 'D')" data-value="D">
+                            D. 保存结果到记忆系统
+                        </div>
                     </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">方向B</div>
-                        <div class="timeline-title">Agent集群架构</div>
-                        <div class="timeline-desc">大规模多Agent系统设计、负载均衡、故障恢复</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">方向C</div>
-                        <div class="timeline-title">产品化实践</div>
-                        <div class="timeline-desc">基于Kimi Claw构建个人/团队生产力系统</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-day">方向D</div>
-                        <div class="timeline-title">研究向</div>
-                        <div class="timeline-desc">最新论文、前沿架构</div>
-                    </div>
+                    <div class="quiz-result" id="q2-result"></div>
+                </div>
+                
+                <button class="btn" onclick="checkAnswers()">提交答案</button>
+                <button class="btn" onclick="resetQuiz()" style="margin-left: 1rem; background: var(--bg-hover);">重置</button>
+                
+                <!-- Practical Task -->
+                <div class="practical-task">
+                    <h3>🛠️ 实操题 | 设计个人日程Agent</h3>
+                    <p style="margin-bottom: 1rem;">请设计一个"个人日程Agent"的功能清单，说明它需要：</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-muted);">
+                        <li><strong>感知什么</strong>（接收哪些信息）</li>
+                        <li><strong>思考什么</strong>（如何处理信息）</li>
+                        <li><strong>执行什么</strong>（完成哪些行动）</li>
+                    </ul>
+                    <textarea id="practicalAnswer" placeholder="请在这里输入你的答案..."></textarea>
+                    <button class="btn" onclick="submitPractical()">提交实操题</button>
+                    <div id="practicalFeedback" style="margin-top: 1rem; padding: 1rem; border-radius: 8px; display: none;"></div>
                 </div>
             </div>
         </div>
@@ -597,146 +444,147 @@
         <div id="news" class="section">
             <div class="card">
                 <h2>📰 今日AI新闻 | 2026年2月23日</h2>
-                <div class="news-grid">
-                    <div class="news-item">
-                        <h4>🚀 马斯克直播发布Grok3</h4>
-                        <p>马斯克称Grok3"聪明得可怕"，性能超过目前发布的所有其他模型。</p>
-                        <a href="https://k.sina.cn/article_7857201856_1d45362c001902jwty.html?from=tech" target="_blank">查看详情 →</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>🤖 法拉第未来EAI机器人下周交付</h4>
-                        <p>贾跃亭公布最新进展，首批交付准备工作已完成。</p>
-                        <a href="https://k.sina.com.cn/article_7857201856_1d45362c001902jx7k.html?from=tech" target="_blank">查看详情 →</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>🧬 晶泰科技AI节省90%实验量</h4>
-                        <p>与尧唐生物合作，利用AI与机器人自动化实验技术破局mRNA药物研发。</p>
-                        <a href="https://www.prnasia.com/story/522862-1.shtml" target="_blank">查看详情 →</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>📈 智谱AI股价大涨42%</h4>
-                        <p>港股AI股集体上涨，智谱总市值突破3000亿港元。</p>
-                        <a href="https://www.stcn.com/article/detail/3645832.html" target="_blank">查看详情 →</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>💻 有道发布LobsterAI</h4>
-                        <p>桌面级Agent"有道龙虾"，7×24小时全场景个人助理。</p>
-                        <a href="https://news.qq.com/rain/a/20260212A04IV200" target="_blank">查看详情 →</a>
-                    </div>
-                    <div class="news-item">
-                        <h4>🌐 2026年AI Agent全面爆发</h4>
-                        <p>从"大模型参数竞赛"到"Agent价值落地"的核心转向。</p>
-                        <a href="https://emcreative.eastmoney.com/app_fortune/article/index.html?artCode=20260215133158749510650&postId=1669913478" target="_blank">查看详情 →</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>📊 新闻归档</h2>
-                <p>历史新闻已保存至：<code>ai-news/2026-02-23.md</code></p>
-                <p style="margin-top: 0.5rem; color: var(--text-muted);">每日新闻自动更新，可在此页面查看最新动态。</p>
-            </div>
-        </div>
-        
-        <!-- Progress Section -->
-        <div id="progress" class="section">
-            <div class="card">
-                <h2>📈 学习进度追踪</h2>
                 
-                <h3>总体进度</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 5%"></div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                    <div style="background: var(--bg-hover); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--primary);">
+                        <h4 style="margin-bottom: 0.5rem;">🚀 马斯克直播发布Grok3</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">马斯克称Grok3"聪明得可怕"，性能超过目前发布的所有其他模型。</p>
+                        <a href="https://k.sina.cn/article_7857201856_1d45362c001902jwty.html" target="_blank" style="color: var(--accent); font-size: 0.85rem;">查看详情 →</a>
+                    </div>
+                    
+                    <div style="background: var(--bg-hover); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--primary);">
+                        <h4 style="margin-bottom: 0.5rem;">🤖 法拉第未来EAI机器人下周交付</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">贾跃亭公布最新进展，首批交付准备工作已完成。</p>
+                        <a href="https://k.sina.com.cn/article_7857201856_1d45362c001902jx7k.html" target="_blank" style="color: var(--accent); font-size: 0.85rem;">查看详情 →</a>
+                    </div>
+                    
+                    <div style="background: var(--bg-hover); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--primary);">
+                        <h4 style="margin-bottom: 0.5rem;">🧬 晶泰科技AI节省90%实验量</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">与尧唐生物合作，利用AI与机器人自动化实验技术破局mRNA药物研发。</p>
+                        <a href="https://www.prnasia.com/story/522862-1.shtml" target="_blank" style="color: var(--accent); font-size: 0.85rem;">查看详情 →</a>
+                    </div>
+                    
+                    <div style="background: var(--bg-hover); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--primary);">
+                        <h4 style="margin-bottom: 0.5rem;">💻 有道发布LobsterAI</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">桌面级Agent"有道龙虾"，7×24小时全场景个人助理。</p>
+                        <a href="https://news.qq.com/rain/a/20260212A04IV200" target="_blank" style="color: var(--accent); font-size: 0.85rem;">查看详情 →</a>
+                    </div>
                 </div>
-                <p style="text-align: center; margin-top: 0.5rem;">Day 1 / 21 | 5% 完成</p>
-                
-                <h3 style="margin-top: 2rem;">阶段进度</h3>
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-number">1/7</div>
-                        <div class="stat-label">第一阶段</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">0/14</div>
-                        <div class="stat-label">第二阶段</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">0/∞</div>
-                        <div class="stat-label">第三阶段</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>🦾 Kimi Claw 能力掌握清单</h2>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr style="background: var(--bg-hover);">
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--border);">能力</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--border);">掌握内容</th>
-                        <th style="padding: 0.75rem; text-align: left; border: 1px solid var(--border);">状态</th>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">基础操作</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">安装、配置、基础命令、help系统</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                    <tr style="background: var(--bg-hover);">
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">工具使用</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">文件操作、网络搜索、代码执行、浏览器控制</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">自动化</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">Cron定时任务、Heartbeat机制、任务编排</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                    <tr style="background: var(--bg-hover);">
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">记忆管理</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">MEMORY.md、memory_search、长期记忆设计</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">子Agent</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">sessions_spawn、多Agent协作、任务分发</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                    <tr style="background: var(--bg-hover);">
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">Skill开发</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">自定义Skill编写、工具封装、SKILL.md规范</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);">集群思维</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border); color: var(--text-muted);">多实例协作、任务拆分、结果汇总</td>
-                        <td style="padding: 0.75rem; border: 1px solid var(--border);"><span class="tag tag-warning">待学习</span></td>
-                    </tr>
-                </table>
             </div>
         </div>
     </div>
     
     <footer>
-        <p>AI Agent 高手养成计划 | 由 Kimi Claw 自动生成</p>
-        <p style="margin-top: 0.5rem; font-size: 0.85rem;">每日更新 · 持续迭代 · 从0到1掌握AI Agent</p>
+        <p>AI Agent 高手养成计划 | 每日更新 · 持续迭代</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">从0到1掌握AI Agent开发与应用</p>
     </footer>
     
     <script>
+        // Navigation
         function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            
-            // Update nav active state
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-            });
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
             document.querySelector(`nav a[href="#${sectionId}"]`).classList.add('active');
-            
-            // Scroll to top
             window.scrollTo(0, 0);
+        }
+        
+        // Quiz State
+        const correctAnswers = { 1: 'B', 2: 'B' };
+        let selectedAnswers = {};
+        let checked = false;
+        
+        function selectOption(question, option) {
+            if (checked) return;
+            
+            const options = document.querySelectorAll(`#q${question}-options .quiz-option`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            const selected = document.querySelector(`#q${question}-options .quiz-option[data-value="${option}"]`);
+            selected.classList.add('selected');
+            
+            selectedAnswers[question] = option;
+        }
+        
+        function checkAnswers() {
+            if (Object.keys(selectedAnswers).length < 2) {
+                alert('请先回答所有选择题');
+                return;
+            }
+            
+            checked = true;
+            let score = 0;
+            
+            for (let q = 1; q <= 2; q++) {
+                const options = document.querySelectorAll(`#q${q}-options .quiz-option`);
+                const resultDiv = document.getElementById(`q${q}-result`);
+                const userAnswer = selectedAnswers[q];
+                const correct = correctAnswers[q];
+                
+                options.forEach(opt => {
+                    const value = opt.getAttribute('data-value');
+                    opt.classList.remove('selected');
+                    opt.style.pointerEvents = 'none';
+                    
+                    if (value === correct) {
+                        opt.classList.add('correct');
+                    } else if (value === userAnswer && userAnswer !== correct) {
+                        opt.classList.add('wrong');
+                    }
+                });
+                
+                if (userAnswer === correct) {
+                    score++;
+                    resultDiv.innerHTML = '✅ 回答正确！';
+                    resultDiv.className = 'quiz-result correct show';
+                } else {
+                    resultDiv.innerHTML = `❌ 回答错误。正确答案是：${correct}`;
+                    resultDiv.className = 'quiz-result wrong show';
+                }
+            }
+            
+            document.getElementById('scoreDisplay').style.display = 'block';
+            document.getElementById('scoreNumber').textContent = `${score}/2`;
+        }
+        
+        function resetQuiz() {
+            checked = false;
+            selectedAnswers = {};
+            
+            for (let q = 1; q <= 2; q++) {
+                const options = document.querySelectorAll(`#q${q}-options .quiz-option`);
+                options.forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'wrong');
+                    opt.style.pointerEvents = 'auto';
+                });
+                document.getElementById(`q${q}-result`).className = 'quiz-result';
+            }
+            
+            document.getElementById('scoreDisplay').style.display = 'none';
+            document.getElementById('practicalAnswer').value = '';
+            document.getElementById('practicalFeedback').style.display = 'none';
+        }
+        
+        function submitPractical() {
+            const answer = document.getElementById('practicalAnswer').value.trim();
+            const feedback = document.getElementById('practicalFeedback');
+            
+            if (!answer) {
+                alert('请先输入答案');
+                return;
+            }
+            
+            feedback.style.display = 'block';
+            feedback.style.background = 'rgba(6, 182, 212, 0.2)';
+            feedback.style.color = 'var(--accent)';
+            feedback.innerHTML = `
+                <strong>✅ 已提交！</strong><br><br>
+                你的答案已记录。参考要点：<br>
+                • <strong>感知</strong>：日历事件、邮件、消息提醒、时间变化<br>
+                • <strong>思考</strong>：优先级排序、时间冲突检测、最佳安排建议<br>
+                • <strong>执行</strong>：发送提醒、自动安排会议、生成日程报告<br><br>
+                <em>（实操题需要人工评估，请将答案复制给我批改）</em>
+            `;
         }
     </script>
 </body>
